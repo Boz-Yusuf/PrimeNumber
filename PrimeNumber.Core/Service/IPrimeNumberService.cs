@@ -1,4 +1,5 @@
-﻿using PrimeNumber.Core.Entities;
+﻿using PrimeNumber.Core.DTOs;
+using PrimeNumber.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,8 @@ namespace PrimeNumber.Core.Service
 {
     public interface IPrimeNumberService
     {
-        Task<CalculatedSet> GetByIdAsync(int id);
         Task<IEnumerable<CalculatedSet>> GetAllAsync();
-        Task<CalculatedSet> AddAsync(CalculatedSet set);
-        Task UpdateAsync(CalculatedSet set);
-        Task RemoveAsync(CalculatedSet set);
+        Task<CalculatedSet> AddAsync(FindRequestDto set);
+
     }
 }

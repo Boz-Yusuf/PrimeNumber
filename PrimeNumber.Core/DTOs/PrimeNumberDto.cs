@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PrimeNumber.Core.Entities
+namespace PrimeNumber.Core.DTOs
 {
-    public class CalculatedSet
+    public class PrimeNumberDto
     {
-        public int Id { get; set; }
         public int BiggestPrimeNumber { get; set; }
-        public string Numbers { get; set; }
+        public List<int> NumberSet { get; set; }
     }
 }
