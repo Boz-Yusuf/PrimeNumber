@@ -43,7 +43,38 @@ namespace PrimeNumber.Service.Services
 
         public int FindBiggestPrime(List<int> numberList)
         {
-            return 0;
+            int biggestPrime = -1;
+
+
+            foreach(int number in numberList)
+            {
+                if (isPrime(number) && (number > biggestPrime))
+                {
+                    biggestPrime = number;
+                }
+            }
+
+
+            return biggestPrime;
         }
+
+
+        public bool isPrime(int number)
+        {
+
+            if(number == 2)
+                return true;
+
+
+            for(int i = 2; i < (number / 2); i++)
+            {
+                if(number % i == 0)
+                    return false;
+            }
+
+            return true;
+        }
+
+
     }
 }
