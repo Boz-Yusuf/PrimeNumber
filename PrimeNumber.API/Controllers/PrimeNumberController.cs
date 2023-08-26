@@ -4,9 +4,8 @@ using PrimeNumber.Core.Service;
 
 namespace PrimeNumber.API.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PrimeNumberController : ControllerBase
+
+    public class PrimeNumberController : CustomBaseController
     {
 
         private readonly IPrimeNumberService _service;
@@ -21,7 +20,7 @@ namespace PrimeNumber.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var numberSets = await _service.GetAllAsync();
-            return Ok(numberSets);
+            return CreateActionResult(CustomResponseDto<IEnumerable<CalculatedSetDto>>.Success(200, numberSets));
         }
 
 
@@ -29,7 +28,7 @@ namespace PrimeNumber.API.Controllers
         public async Task<IActionResult> Save([FromBody]FindRequestDto findRequestDto)
         {
             var result = await _service.AddAsync(findRequestDto);
-            return Ok(result);
+            return CreateActionResult(CustomResponseDto<CalculatedSetDto>.Success(200, result));
         }
 
 
