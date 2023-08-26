@@ -6,6 +6,7 @@ using PrimeNumber.Core.UnitOfWork;
 using PrimeNumber.Repository;
 using PrimeNumber.Repository.Repositories;
 using PrimeNumber.Repository.UnitOfWork;
+using PrimeNumber.Service.Mapping;
 using PrimeNumber.Service.Services;
 using PrimeNumber.Service.Validations;
 using System.Reflection;
@@ -22,7 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-
+builder.Services.AddAutoMapper(typeof(MapProfile));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

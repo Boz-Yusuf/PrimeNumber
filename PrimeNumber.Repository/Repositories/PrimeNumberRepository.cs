@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PrimeNumber.Core.Entities;
 using PrimeNumber.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PrimeNumber.Repository.Repositories
 {

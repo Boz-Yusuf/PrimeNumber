@@ -1,4 +1,5 @@
-﻿using PrimeNumber.Core.DTOs;
+﻿using AutoMapper;
+using PrimeNumber.Core.DTOs;
 using PrimeNumber.Core.Entities;
 using PrimeNumber.Core.Repositories;
 using PrimeNumber.Core.Service;
@@ -10,14 +11,16 @@ namespace PrimeNumber.Service.Services
     {
         private readonly IPrimeNumberRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public PrimeNumberService(IPrimeNumberRepository repository, IUnitOfWork unitOfWork)
+        public PrimeNumberService(IPrimeNumberRepository repository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<CalculatedSet> AddAsync(FindRequestDto set)
+        public async Task<CalculatedSetDto> AddAsync(FindRequestDto set)
         {
             string numbers = "";
             foreach(int number in set.NumberSet)
@@ -32,12 +35,13 @@ namespace PrimeNumber.Service.Services
             await _repository.AddAsync(calculatedSet);
             await _unitOfWork.CommitAsync();
 
-            return calculatedSet;
+            return _mapper.Map<CalculatedSetDto>(calculatedSet);
         }
 
-        public async Task<IEnumerable<CalculatedSet>> GetAllAsync()
+        public async Task<IEnumerable<CalculatedSetDto>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var result = await _repository.GetAllAsync();
+            return _mapper.Map<IEnumerable<CalculatedSetDto>>(result);
         }
 
 

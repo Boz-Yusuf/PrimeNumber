@@ -28,12 +28,9 @@ namespace PrimeNumber.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Save([FromBody]FindRequestDto findRequestDto)
         {
-            var product = await _service.AddAsync(findRequestDto);
-            
-            return Ok(findRequestDto);
+            var result = await _service.AddAsync(findRequestDto);
+            return Ok(result);
         }
-
-
 
 
 
