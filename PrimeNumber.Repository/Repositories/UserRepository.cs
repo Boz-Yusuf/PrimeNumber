@@ -22,10 +22,26 @@ namespace PrimeNumber.Repository.Repositories
         }
 
 
+
+        //Register
+
         public async Task<bool> RegisterUserAsync(IdentityUser user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
             return result.Succeeded;
+        }
+
+
+        //Login
+
+        public async Task<IdentityUser> GetUserByEmail(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<bool> ValidatePassword(IdentityUser user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
         }
     }
 }

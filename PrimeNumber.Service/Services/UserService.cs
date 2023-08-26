@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PrimeNumber.Core.DTOs;
 using PrimeNumber.Core.Repositories;
 using PrimeNumber.Core.Service;
@@ -15,7 +16,7 @@ namespace PrimeNumber.Service.Services
         }
 
 
-        public async Task<bool> CreateUser(RegisterDto registerDto)
+        public async Task<bool> CreateUserAsync(RegisterDto registerDto)
         {
             var identityUser = new IdentityUser
             {
@@ -27,6 +28,28 @@ namespace PrimeNumber.Service.Services
 
 
             return result;
+        }
+
+        public async Task<bool> LoginAsync(LoginDto loginDto)
+        {
+
+            var user = await _userRepository.GetUserByEmail(loginDto.Email);
+
+            if (user == null)
+                return false;
+
+            var result = await _userRepository.ValidatePassword(user, loginDto.Password);
+
+            if(result == false)
+                return false;
+
+
+
+
+
+            return true;
+
+
         }
     }
 }

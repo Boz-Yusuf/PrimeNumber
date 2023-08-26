@@ -18,7 +18,7 @@ namespace PrimeNumber.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Register([FromBody]RegisterDto registerDto)
         {
-            var result = await _userService.CreateUser(registerDto);
+            var result = await _userService.CreateUserAsync(registerDto);
       
 
             return Ok(result);

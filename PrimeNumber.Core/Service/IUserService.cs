@@ -9,6 +9,8 @@ namespace PrimeNumber.Core.Service
 {
     public interface IUserService
     {
-        Task<bool> CreateUser(RegisterDto registerDto);
+        Task<bool> CreateUserAsync(RegisterDto registerDto);
+
+        Task<bool> LoginAsync(LoginDto loginDto);
     }
 }
