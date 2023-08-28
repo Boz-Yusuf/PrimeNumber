@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PrimeNumber.Core.DTOs;
 using PrimeNumber.Core.Service;
 
@@ -17,10 +18,16 @@ namespace PrimeNumber.API.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody]RegisterDto registerDto)
         {
-            var result = await _userService.CreateUserAsync(registerDto);
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.CreateUserAsync(registerDto);
+                return CreateActionResult(CustomResponseDto<bool>.Success(200, result));
+            }
 
-            
-            return Ok(result);
+            IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+            List<string> errorMessages = allErrors.Select(e => e.ErrorMessage).ToList();
+            return CreateActionResult(CustomResponseDto<string>.Fail(400, "deneme"));
+
         }
 
 
@@ -41,7 +48,10 @@ namespace PrimeNumber.API.Controllers
 
             }
 
-            return BadRequest("Some Properties are not valid");
+
+            IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+            List<string> errorMessages = allErrors.Select(e => e.ErrorMessage).ToList();
+            return CreateActionResult(CustomResponseDto<string>.Fail(400, errorMessages));
         }
 
 

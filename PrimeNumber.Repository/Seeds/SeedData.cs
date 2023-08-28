@@ -27,7 +27,7 @@ namespace PrimeNumber.Repository.Seeds
                     UserName = "admin@example.com",
                     Email = "admin@example.com"
                 };
-                await userManager.CreateAsync(adminUser, "YourPasswordHere.35");
+                await userManager.CreateAsync(adminUser, "Admin.35");
                 //var result = await _userManager.CreateAsync(user, password);
 
                 // Admin kullanıcısına "admin" rolünü ata

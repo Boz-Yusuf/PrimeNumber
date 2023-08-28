@@ -28,6 +28,7 @@ namespace PrimeNumber.Service.Services
                 numbers += number.ToString();
                 numbers += ",";
             }
+            numbers = numbers.Substring(0, numbers.Length - 1);
 
             int BiggestPrime = FindBiggestPrime(set.NumberSet);
             var calculatedSet = new CalculatedSet() { BiggestPrimeNumber= BiggestPrime , Numbers = numbers };
@@ -70,7 +71,7 @@ namespace PrimeNumber.Service.Services
                 return true;
 
 
-            for(int i = 2; i < (number / 2); i++)
+            for(int i = 2; i <= (number / 2)  ; i++)
             {
                 if(number % i == 0)
                     return false;
