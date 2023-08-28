@@ -8,6 +8,7 @@ using PrimeNumber.Core.Service;
 using PrimeNumber.Core.UnitOfWork;
 using PrimeNumber.Repository;
 using PrimeNumber.Repository.Repositories;
+
 using PrimeNumber.Repository.UnitOfWork;
 using PrimeNumber.Service.Mapping;
 using PrimeNumber.Service.Services;
@@ -56,6 +57,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireLowercase = true;
     options.Password.RequiredLength = 5;
     options.SignIn.RequireConfirmedAccount = false;
+
 }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(auth =>
@@ -69,15 +71,31 @@ builder.Services.AddAuthentication(auth =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidAudience = builder.Configuration["AuthSettings:Audience"],
-        ValidIssuer = builder.Configuration["AuthSettings:ValidIssuer"],
+        ValidIssuer = builder.Configuration["AuthSettings:Issuer"],
         RequireExpirationTime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
         ValidateIssuerSigningKey = true
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("http://127.0.0.1:5500") // veya "*"
+                          .AllowAnyHeader()
+                          .AllowAnyMethod());
+});
+
+
+
+
+
+
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+PrimeNumber.Repository.Seeds.SeedData.Initialize(scope.ServiceProvider).Wait();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -85,6 +103,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 

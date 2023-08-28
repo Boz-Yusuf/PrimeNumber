@@ -12,7 +12,7 @@ using PrimeNumber.Repository;
 namespace PrimeNumber.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230826163841_init")]
+    [Migration("20230827140732_init")]
     partial class init
     {
         /// <inheritdoc />

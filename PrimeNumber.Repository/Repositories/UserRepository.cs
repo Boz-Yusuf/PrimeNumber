@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using PrimeNumber.Core.DTOs;
+using Microsoft.EntityFrameworkCore;
+using PrimeNumber.Core.Entities;
 using PrimeNumber.Core.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PrimeNumber.Repository.Repositories
 {
@@ -15,12 +13,16 @@ namespace PrimeNumber.Repository.Repositories
 
         private readonly UserManager<IdentityUser> _userManager;
 
+        protected readonly AppDbContext _context;
+        private readonly DbSet<CalculatedSet> _dbSet;
 
-        public UserRepository(UserManager<IdentityUser> userManager)
+
+        public UserRepository(UserManager<IdentityUser> userManager, AppDbContext context)
         {
-            _userManager = userManager; 
+            _userManager = userManager;
+            _context = context;
+            _dbSet = _context.Set<CalculatedSet>();
         }
-
 
 
         //Register
@@ -43,5 +45,17 @@ namespace PrimeNumber.Repository.Repositories
         {
             return await _userManager.CheckPasswordAsync(user, password);
         }
+
+
+        public List<string> GetUserRoles(string userId)
+        {
+            var userRoles = _context.UserRoles
+                .Where(ur => ur.UserId == userId)
+                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
+                .ToList();
+
+            return userRoles;
+        }
+
     }
 }

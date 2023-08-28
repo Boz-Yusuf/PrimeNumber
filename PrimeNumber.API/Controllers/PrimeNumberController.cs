@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrimeNumber.Core.DTOs;
 using PrimeNumber.Core.Service;
 
@@ -15,12 +16,14 @@ namespace PrimeNumber.API.Controllers
             _service = service;
         }
 
-
         [HttpGet]
+        //[Authorize(Roles = "admin")]
         public async Task<IActionResult> GetAll()
         {
+            //var a = User.IsInRole("admin");
             var numberSets = await _service.GetAllAsync();
             return CreateActionResult(CustomResponseDto<IEnumerable<CalculatedSetDto>>.Success(200, numberSets));
+
         }
 
 
@@ -32,6 +35,6 @@ namespace PrimeNumber.API.Controllers
         }
 
 
-
+        
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using PrimeNumber.Core.DTOs;
 using PrimeNumber.Core.Repositories;
 using PrimeNumber.Core.Service;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -23,6 +24,10 @@ namespace PrimeNumber.Service.Services
         }
 
 
+
+
+
+
         public async Task<bool> CreateUserAsync(RegisterDto registerDto)
         {
             var identityUser = new IdentityUser
@@ -37,31 +42,46 @@ namespace PrimeNumber.Service.Services
             return result;
         }
 
-        public async Task<UserRegisterResponse> LoginAsync(LoginDto loginDto)
-        {
 
+
+
+        public async Task<UserRegisterResponseDto> LoginAsync(LoginDto loginDto)
+        {
+            List<string> errorList = new List<string>();
             var user = await _userRepository.GetUserByEmail(loginDto.Email);
 
             if (user == null)
-                return new UserRegisterResponse
+            {
+                errorList.Add("User not found");
+                return new UserRegisterResponseDto
                 {
-                    Message = "User not found",
-                    IsSuccess = false,
+                    Errors = errorList,
+                    IsSuccess = false
                 };
+            }
+
 
             var result = await _userRepository.ValidatePassword(user, loginDto.Password);
 
-            if(result == false)
-                return new UserRegisterResponse
+            if (result == false)
+            {
+                errorList.Add("User Credentials incorrect");
+                return new UserRegisterResponseDto
                 {
-                    Message = "User Credentials wrong",
-                    IsSuccess = false,
+                    Errors= errorList,
+                    IsSuccess = false
                 };
+            }
+
+
+            var userRoles = _userRepository.GetUserRoles(user.Id);
 
             var claims = new[]
             {
                 new Claim("Email", loginDto.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Role,  userRoles.Contains("admin") ? "admin" : "user")
+             
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
@@ -70,13 +90,13 @@ namespace PrimeNumber.Service.Services
                 issuer: _configuration["AuthSettings:Issuer"],
                 audience: _configuration["AuthSettings:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(7),
+                expires: DateTime.Now.AddDays(30),
                 signingCredentials: new SigningCredentials(key,SecurityAlgorithms.HmacSha256));
 
 
             string tokenAsString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new UserRegisterResponse
+            return new UserRegisterResponseDto
             {
                 Message = tokenAsString,
                 IsSuccess = true,
@@ -84,5 +104,9 @@ namespace PrimeNumber.Service.Services
             };
 
         }
+
+
+
+
     }
 }

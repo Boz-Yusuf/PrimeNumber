@@ -6,6 +6,7 @@ namespace PrimeNumber.Core.Service
     {
         Task<bool> CreateUserAsync(RegisterDto registerDto);
 
-        Task<UserRegisterResponse> LoginAsync(LoginDto loginDto);
+        Task<UserRegisterResponseDto> LoginAsync(LoginDto loginDto);
+
     }
 }

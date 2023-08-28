@@ -18,8 +18,8 @@ namespace PrimeNumber.API.Controllers
         public async Task<IActionResult> Register([FromBody]RegisterDto registerDto)
         {
             var result = await _userService.CreateUserAsync(registerDto);
-      
 
+            
             return Ok(result);
         }
 
@@ -33,10 +33,10 @@ namespace PrimeNumber.API.Controllers
                 var result = await _userService.LoginAsync(loginDto);
 
 
-                if(result.IsSuccess)
-                    return Ok(result);
+                if (result.IsSuccess)
+                    return CreateActionResult(CustomResponseDto<string>.Success(200, result.Message));
 
-                return BadRequest(result);
+                return CreateActionResult(CustomResponseDto<string>.Fail(400, result.Errors));
 
 
             }
